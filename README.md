@@ -84,7 +84,7 @@ CREATE DATABASE "TGBotDB"
 CREATE SCHEMA "TGBotSchema"
    AUTHORIZATION "TGbotSU";
 ```
-After you have created the database, you need to edit the [config](#config), flyway will do the rest for you.
+After you have created the database, you need to edit the [config](#example-config), flyway will do the rest for you.
 
 ## Logging in project
 The project uses logback, documentation can be found at this [link](https://logback.qos.ch/manual/appenders.html).

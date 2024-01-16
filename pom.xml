@@ -11,9 +11,9 @@
 
 	<groupId>by.btd</groupId>
 	<artifactId>JavaTelegramBot</artifactId>
-	<version>1.0.000</version>
+	<version>1.0.001</version>
 	<name>JavaTelegramBot</name>
-	<description>Example of a telegram bot using the telegrambots library</description>
+	<description>Example of a telegram bot using the TelegramBots library</description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
