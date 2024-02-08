@@ -1,6 +1,5 @@
-package by.btd.commands;
+package by.btd.handlers;
 
-import by.btd.Handlers.MessageHandlers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -8,14 +7,15 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Component
 @RequiredArgsConstructor
-public class StickerHand implements MessageHandlers {
+public class StickerHandler {
 
-    @Override
-    public SendMessage SendMessageHandler(Update update) {
-        SendMessage sendMessage = new SendMessage();
+    public static SendMessage stickerHandler(Update update) {
         long chatId = update.getMessage().getChatId();
+        SendMessage sendMessage = new SendMessage();
+
         sendMessage.setChatId(chatId);
-        sendMessage.setText("Одобряю");
+        sendMessage.enableMarkdownV2(true);
+        sendMessage.setText("gg");
 
         return sendMessage;
     }
