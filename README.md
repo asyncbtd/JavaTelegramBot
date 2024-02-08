@@ -14,9 +14,9 @@ or use shell or cmd files in the project root depending on your operating system
 
 All commands must be written in the root folder of the project.
 
-Before each build, you need to remove old artifacts using the `mvn clean` command.
+If you installed maven yourself use the `mvn clean` command to clean up old artifacts. If you don't want to install maven just use the `mvnw clean` command.
 
-You can start the build using the `mvn package` command.
+If you installed maven yourself you can build the project using the `mvn package` command. If you don't want to install maven just use the `mvnw package` command.
 ## Example config
 ```yaml
 telegram:
