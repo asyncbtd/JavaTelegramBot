@@ -12,13 +12,11 @@
 To build the project you need maven which can be downloaded [here](https://maven.apache.org/download.cgi),
 or use shell or cmd files in the project root depending on your operating system.
 
-Before each build, you need to remove old artifacts using the `mvn clean` command if you installed maven yourself,
-if you use files from the project root command for Windows `mvnw clean` and for Linux `./mvnw clean`.
+All commands must be written in the root folder of the project.
 
-You can start the build using the `mvn package` command, if you installed maven yourself,
-or if you are using the project files from the root command for Windows `mvnw clean` and for Linux `./mvnw clean`.
-Once the build is complete, a target folder is created in the project root where the .jar file will be located.
+Before each build, you need to remove old artifacts using the `mvn clean` command.
 
+You can start the build using the `mvn package` command.
 ## Example config
 ```yaml
 telegram:
