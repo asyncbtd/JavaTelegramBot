@@ -5,16 +5,12 @@ import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
 
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -40,10 +36,11 @@ public class LocalService {
     @SneakyThrows
     private static void loadLanguageSettings(String language) {
         languageSettings = new ArrayList<>();
-        File resourcesFolder = new File("src/main/resources/languages");
+        var resourcesFolder = new File("src/main/resources/languages");
         File[] files = resourcesFolder.listFiles();
+        boolean checkingFileAvailability = false;
 
-        log.info("Started looking for language settings in the folder [{}]", resourcesFolder);
+        log.info("Started looking for language settings in folder [{}]", resourcesFolder);
         if (resourcesFolder.exists() && resourcesFolder.isDirectory()) {
             boolean javaFilesExist = false;
             for (File file : files) {
@@ -54,15 +51,18 @@ public class LocalService {
             }
             if (javaFilesExist) {
                 for (File file : files) {
-                    Assert.isTrue(file.getName().endsWith(language + ".json"), String.format("Language [%s] not found", language));
                     if (file.isFile() && file.getName().endsWith(language + ".json")) {
-                        FileReader reader = new FileReader(file);
-                        JsonObject jsonObject = JsonParser.parseReader(reader).getAsJsonObject();
+                        checkingFileAvailability = true;
+                        var reader = new FileReader(file);
+                        var jsonObject = JsonParser.parseReader(reader).getAsJsonObject();
                         languageSettings.add(jsonObject);
                     }
                 }
-            } else {
-                log.error("There are no language files in the folder");
+                if (checkingFileAvailability) {
+                    log.info("Message successfully localized to language [{}]", language);
+                } else {
+                    log.error("Language settings file [{}] not found in folder [{}]", language, resourcesFolder);
+                }
             }
         } else {
             log.error("The folder with the language files is missing");

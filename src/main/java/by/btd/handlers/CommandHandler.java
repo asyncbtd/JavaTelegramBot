@@ -1,86 +1,80 @@
 package by.btd.handlers;
 
 import by.btd.BotHandlers;
-import by.btd.keyboard.ReplyCommandHandler;
-import by.btd.kkk;
-import by.btd.services.Emoji;
-import by.btd.services.LocalService;
-import by.btd.services.UnprocessedMessagesService;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
+import by.btd.config.TelegramProp;
+import by.btd.services.*;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
+
+import java.io.File;
 
 @Slf4j
 @Component
-//@RequiredArgsConstructor
-public class CommandHandler extends BotHandlers {
-    public CommandHandler(kkk props) {
-        super(props);
+@RequiredArgsConstructor
+public class CommandHandler {
+
+    private final TelegramProp telegramProp;
+
+    public void handler(Update update) {
+        var unprocessedMessagesService = new UnprocessedMessagesService(telegramProp);
+        String command = update.getMessage().getText();
+
+        switch (command) {
+            case "/start" -> startCommand(update);
+            case "/help" -> helpCommand(update);
+            case "/exit" -> exitCommand(update);
+            default -> unprocessedMessagesService.unprocessedMessage(update);
+        }
     }
 
-    public static SendMessage commandHandler(Update update) {
-        String command = update.getMessage().getText();
+    private void startCommand(Update update) {
+        var botHandlers = new BotHandlers(telegramProp);
+        var sendMessage = new SendMessage();
         long chatId = update.getMessage().getChatId();
 
-        log.info("Принял запрос");
-        return switch (command) {
-            case "/start" -> startCommand(chatId);
-            case "/help" -> helpCommand(chatId);
-            case "/test" -> testCommand(chatId);
-            default -> UnprocessedMessagesService.unprocessedMessage(chatId);
-        };
-    }
-
-    private static SendMessage startCommand(long chatId) {
-        SendMessage startCommandMessage = new SendMessage();
-        startCommandMessage.setChatId(chatId);
-        startCommandMessage.enableMarkdownV2(true);
-        startCommandMessage.setText("Старт");
-
-        ReplyCommandHandler.addKeyboardToStartCommand(startCommandMessage);
-
-        return startCommandMessage;
-    }
-
-    private static SendMessage helpCommand(long chatId) {
-        SendMessage helpCommandMessage = new SendMessage();
-        helpCommandMessage.setChatId(chatId);
-        helpCommandMessage.enableMarkdownV2(true);
-        helpCommandMessage.setText(LocalService.getString("pl", "HELP_COMMAND"));
-
-        return helpCommandMessage;
-    }
-
-    private static SendMessage testCommand(long chatId) {
-        var testCommandMessage = new SendMessage();
-        testCommandMessage.setChatId(chatId);
-        testCommandMessage.enableMarkdownV2(true);
-        var stringBuilder = new StringBuilder();
-        //stringBuilder.append(LocalService.getString("ru", "TEST_COMMAND"));
-        stringBuilder.append(Emoji.KISSING_HEART);
-        //testCommandMessage.setText(LocalService.getString("ru", "TEST_COMMAND") + Emoji.RELAXED);
-        testCommandMessage.setText(stringBuilder.toString());
-
-        return testCommandMessage;
-    }
-
-//    private static SendMessage testCommand2(long chatId) {
-//        var testCommand2 = new SendMessage();
-//        testCommand2.setChatId(chatId);
-//        testCommand2.setText("METHOD");
-//        GKGK.method1();
-//
-//        return testCommand2;
-
-    public static void testCommand2(long chatId) {
-        SendMessage sendMessage = new SendMessage();
+        sendMessage.enableMarkdownV2(true);
+        sendMessage.setText(LocalService.getString("ru", "START_COMMAND"));
         sendMessage.setChatId(chatId);
-        sendMessage.setText("fdfd");
-        //var botHandlers = new BotHandlers();
-        //botHandlers.botSendMessage(sendMessage, chatId);
+
+        botHandlers.anyExecute(sendMessage, update);
+    }
+
+    private void helpCommand(Update update) {
+        var botHandlers = new BotHandlers(telegramProp);
+        var sendMessage = new SendMessage();
+        long chatId = update.getMessage().getChatId();
+
+        sendMessage.enableMarkdownV2(true);
+        sendMessage.setText(LocalService.getString("ru", "START_COMMAND"));
+        sendMessage.setChatId(chatId);
+
+        var file = new InputFile(new File(""));
+        var sendDocument = new SendPhoto();
+
+        sendDocument.setCaption("ХУЙ");
+
+        sendDocument.setChatId(chatId);
+        sendDocument.setPhoto(file);
+
+        botHandlers.anyExecute(sendDocument, update);
+        botHandlers.anyExecute(sendMessage, update);
+    }
+
+    private void exitCommand(Update update) {
+        var botHandlers = new BotHandlers(telegramProp);
+        var sendMessage = new SendMessage();
+        long chatId = update.getMessage().getChatId();
+
+        sendMessage.setChatId(chatId);
+        sendMessage.setText("Выключаю себя");
+        botHandlers.anyExecute(sendMessage, update);
+
+        System.exit(0);
     }
 }
